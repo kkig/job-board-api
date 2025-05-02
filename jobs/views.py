@@ -7,7 +7,7 @@ from .permissions import IsEmployer
 
 # Create your views here.
 class JobViewSet(viewsets.ModelViewSet):
-    queryset = Job.objects.all()
+    queryset = Job.objects.all()    # Defines what data is available
     serializer_class = JobSerializer
 
     def get_permissions(self):
