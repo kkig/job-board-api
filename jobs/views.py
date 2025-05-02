@@ -1,6 +1,10 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, generics
+from rest_framework.permissions import AllowAny
+
 from .models import Job
+
 from .serializers import JobSerializer
+from .serializers_user import UserSignupSerializer
 
 from .permissions import IsEmployer
 
@@ -14,3 +18,8 @@ class JobViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsEmployer()]
         return [permissions.AllowAny()]
+
+
+class SignupView(generics.CreateAPIView):
+    serializer_class = UserSignupSerializer
+    permission_classes = [AllowAny]
