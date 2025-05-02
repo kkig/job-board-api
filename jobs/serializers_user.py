@@ -6,7 +6,7 @@ from jobs.models import Profile
 # Convert model to JSON format
 class UserSignupSerializer(serializers.ModelSerializer):
     role = serializers.ChoiceField(
-        choice=Profile.ROLE_CHOICES,
+        choices=Profile.ROLE_CHOICES,
         write_only=True
     )
     password = serializers.CharField(write_only=True, min_length=6)
