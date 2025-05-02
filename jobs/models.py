@@ -9,8 +9,8 @@ class Job(models.Model):
     company = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
     job_type = models.CharField(max_length=50, choices=[
-        ('FT', 'Full-time'), ('PT', 'Part-time')]
-    )
+        ('FT', 'Full-time'), ('PT', 'Part-time')
+    ])
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     posted_at = models.DateTimeField(auto_now_add=True)
 
