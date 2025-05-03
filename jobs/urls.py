@@ -1,7 +1,12 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from .views import JobViewSet, SignupView, MyApplicationsView
+from .views import (
+    JobViewSet,
+    SignupView,
+    MyApplicationsView,
+    MyJobsView
+)
 
 router = DefaultRouter()    # Generates RESTful URLs automatically
 router.register(r'jobs', JobViewSet, basename='job')
@@ -14,4 +19,5 @@ urlpatterns = [
         MyApplicationsView.as_view(),
         name='my-applications'
     ),
+    path('my-jobs/', MyJobsView.as_view(), name='my-jobs')
 ]
