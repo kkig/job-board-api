@@ -30,6 +30,9 @@ class JobViewSet(viewsets.ModelViewSet):
             return [IsEmployer()]
         return [permissions.AllowAny()]
 
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
     @action(detail=True, methods=['post'], permission_classes=[IsApplicant])
     def apply(self, request, pk=None):
         job = self.get_object()
@@ -53,7 +56,7 @@ class JobViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True, methods=['get'],
-        permissions_classes=[IsAuthenticated, IsEmployer]
+        permission_classes=[IsAuthenticated, IsEmployer]
     )
     def applicants(self, request, pk=None):
         job = self.get_object()
