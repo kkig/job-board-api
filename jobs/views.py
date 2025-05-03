@@ -104,3 +104,13 @@ class MyApplicationsView(generics.ListAPIView):
         return Application.objects.filter(
             applicant=self.request.user
         ).select_related('job')
+
+
+class MyJobsView(generics.ListAPIView):
+    serializer_class = JobSerializer
+    permission_classes = [IsAuthenticated, IsEmployer]
+
+    def get_queryset(self):
+        return Job.objects.filter(
+                created_by=self.request.user
+            ).order_by('-posted_at')
