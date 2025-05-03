@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .views import JobViewSet, SignupView
 
 router = DefaultRouter()    # Generates RESTful URLs automatically
-router.register(r'jobs', JobViewSet)
+router.register(r'jobs', JobViewSet, basename='job')
 
 urlpatterns = [
     path('', include(router.urls)),

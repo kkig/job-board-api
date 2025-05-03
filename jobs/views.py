@@ -6,15 +6,17 @@ from rest_framework import (
 )
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework.decorators import action
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import Job
+from .models import Job, Application
 
 from .serializers import JobSerializer
 from .serializers_user import UserSignupSerializer
+from .serializers_application import ApplicationSerializer
 
-from .permissions import IsEmployer
+from .permissions import IsEmployer, IsApplicant
 
 
 # Create your views here.
@@ -26,6 +28,27 @@ class JobViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return [IsEmployer()]
         return [permissions.AllowAny()]
+
+    @action(detail=True, methods=['post'], permission_classes=[IsApplicant])
+    def apply(self, request, pk=None):
+        job = self.get_object()
+        user = request.user
+
+        # Check for duplicate
+        if Application.objects.filter(job=job, applicant=user).exists():
+            return Response(
+                {"detail": "You have already applied to this job."},
+                status=400)
+
+        cover_letter = request.data.get("cover_letter", "")
+        application = Application.objects.create(
+            job=job,
+            applicant=user,
+            cover_letter=cover_letter
+        )
+
+        serializer = ApplicationSerializer(application)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class SignupView(generics.CreateAPIView):
