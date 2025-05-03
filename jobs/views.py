@@ -15,6 +15,7 @@ from .models import Job, Application
 from .serializers import JobSerializer
 from .serializers_user import UserSignupSerializer
 from .serializers_application import ApplicationSerializer
+from .serializers_applicants import ApplicantSerializer
 
 from .permissions import IsEmployer, IsApplicant
 
@@ -49,6 +50,29 @@ class JobViewSet(viewsets.ModelViewSet):
 
         serializer = ApplicationSerializer(application)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(
+        detail=True, methods=['get'],
+        permissions_classes=[IsAuthenticated, IsEmployer]
+    )
+    def applicants(self, request, pk=None):
+        job = self.get_object()
+
+        # Check ownership - only the job creater(employer) can view applicants
+        if job.created_by != request.user:
+            return Response(
+                {
+                    "detail": (
+                        "You do not have permission to view",
+                        " applicants for this job."
+                    )
+                },
+                status=403
+            )
+
+        applications = job.applications.select_related('applicant')
+        serializer = ApplicantSerializer(applications, many=True)
+        return Response(serializer.data)
 
 
 class SignupView(generics.CreateAPIView):
