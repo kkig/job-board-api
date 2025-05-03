@@ -15,7 +15,6 @@ from .models import Job, Application
 from .serializers import JobSerializer
 from .serializers_user import UserSignupSerializer
 from .serializers_application import ApplicationSerializer
-from .serializers_applicants import ApplicantSerializer
 
 from .permissions import IsEmployer, IsApplicant
 
@@ -74,7 +73,7 @@ class JobViewSet(viewsets.ModelViewSet):
             )
 
         applications = job.applications.select_related('applicant')
-        serializer = ApplicantSerializer(applications, many=True)
+        serializer = ApplicationSerializer(applications, many=True)
         return Response(serializer.data)
 
     @action(
