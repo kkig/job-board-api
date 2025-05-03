@@ -5,7 +5,8 @@ from .views import (
     JobViewSet,
     SignupView,
     MyApplicationsView,
-    MyJobsView
+    MyJobsView,
+    my_profile,
 )
 
 router = DefaultRouter()    # Generates RESTful URLs automatically
@@ -19,5 +20,6 @@ urlpatterns = [
         MyApplicationsView.as_view(),
         name='my-applications'
     ),
-    path('my-jobs/', MyJobsView.as_view(), name='my-jobs')
+    path('my-jobs/', MyJobsView.as_view(), name='my-jobs'),
+    path('profile/', my_profile, name='my-profile'),
 ]
