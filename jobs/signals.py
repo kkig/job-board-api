@@ -3,9 +3,14 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 from .models import Profile
 
+from django.core.exceptions import ObjectDoesNotExist
+
 
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if created:
+    try:
+        profile = instance.profile
+    except ObjectDoesNotExist:
         Profile.objects.create(user=instance)
-    instance.profile.save()
+    else:
+        profile.save()
