@@ -31,14 +31,25 @@ class Profile(models.Model):
 
 
 class Application(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    ]
+
     job = models.ForeignKey(
-        'Job',
+        Job,
         on_delete=models.CASCADE,
         related_name='applications'
     )
     applicant = models.ForeignKey(User, on_delete=models.CASCADE)
     cover_letter = models.TextField(blank=True)
     applied_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='pending'
+    )
 
     class Meta:
         # Prevent duplicate applications
