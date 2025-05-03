@@ -10,10 +10,11 @@ class UserSignupSerializer(serializers.ModelSerializer):
         write_only=True
     )
     password = serializers.CharField(write_only=True, min_length=6)
+    email = serializers.EmailField()
 
     class Meta:
         model = User
-        fields = ['username', 'password', 'role']
+        fields = ['username', 'password', 'email', 'role']
 
     def create(self, validated_data):
         role = validated_data.pop('role')
