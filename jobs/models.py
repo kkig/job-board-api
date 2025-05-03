@@ -28,3 +28,21 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} ({self.role})"
+
+
+class Application(models.Model):
+    job = models.ForeignKey(
+        'Job',
+        on_delete=models.CASCADE,
+        related_name='applications'
+    )
+    applicant = models.ForeignKey(User, on_delete=models.CASCADE)
+    cover_letter = models.TextField(blank=True)
+    applied_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        # Prevent duplicate applications
+        unique_together = ('job', 'applicant')
+
+    def __str__(self):
+        return f"{self.applicant.username} -> {self.job.title}"
