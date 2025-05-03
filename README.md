@@ -31,16 +31,19 @@ WIP
     ```
     postgres=# \q
     ```
-8. Create Superuser & Migrate
+
+## Set App
+1. Clone this repo
+2. Rename .env.example to .env and update info
+3. Create Superuser & Migrate
     ```
     python manage.py makemigrations
     python manage.py migrate
     python manage.py createsuperuser
     ```
 
-## Set App
-1. Clone this repo
-2. Run commands below
-
 ## Features
-WIP
+- Secure job creation - only employers can post jobs
+- JWT-based login and auto-login on signup
+- Applicants can apply to jobs (and prevent duplicate application)
+- Role-based permission baked in
