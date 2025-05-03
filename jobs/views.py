@@ -6,7 +6,7 @@ from rest_framework import (
 )
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -15,6 +15,7 @@ from .models import Job, Application
 from .serializers import JobSerializer
 from .serializers_user import UserSignupSerializer
 from .serializers_application import ApplicationSerializer
+from .serializers_profile import ProfileSerializer
 
 from .permissions import IsEmployer, IsApplicant
 
@@ -142,3 +143,14 @@ class MyJobsView(generics.ListAPIView):
         return Job.objects.filter(
                 created_by=self.request.user
             ).order_by('-posted_at')
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def my_profile(request):
+    """
+    View current user's profile
+    """
+    profile = request.user.profile
+    serializer = ProfileSerializer(profile)
+    return Response(serializer.data)
