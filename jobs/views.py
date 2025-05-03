@@ -5,7 +5,7 @@ from rest_framework import (
     status,
 )
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
 
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -67,3 +67,13 @@ class SignupView(generics.CreateAPIView):
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         }, status=status.HTTP_201_CREATED)
+
+
+class MyApplicationsView(generics.ListAPIView):
+    serializer_class = ApplicationSerializer
+    permission_classes = [IsAuthenticated, IsApplicant]
+
+    def get_queryset(self):
+        return Application.objects.filter(
+            applicant=self.request.user
+        ).select_related('job')
