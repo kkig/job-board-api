@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Application
 
 
+# Convert model to JSON format
 class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application

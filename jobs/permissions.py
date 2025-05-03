@@ -7,3 +7,12 @@ class IsEmployer(BasePermission):
             request.user,
             'profile'
         ) and request.user.profile.role == 'employer'
+
+
+class IsApplicant(BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.user.is_authenticated and
+            hasattr(request.user, 'profile') and
+            request.user.profile.role == 'applicant'
+        )
