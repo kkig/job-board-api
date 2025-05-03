@@ -77,6 +77,35 @@ class JobViewSet(viewsets.ModelViewSet):
         serializer = ApplicantSerializer(applications, many=True)
         return Response(serializer.data)
 
+    @action(
+        detail=True,
+        methods=['patch'],
+        permission_classes=[IsAuthenticated, IsEmployer]
+    )
+    def update_status(self, request, pk=None):
+        job = self.get_object()
+        if job.created_by != request.user:
+            return Response({"detail": "Not allowed"}, status=403)
+
+        app_id = request.data.get('application_id')
+        new_status = request.data.get('status')
+
+        if new_status not in ['pending', 'accepted', 'rejected']:
+            return Response({"detail": "Invalid status"}, status=400)
+
+        try:
+            application = job.applications.get(id=app_id)
+        except Application.DoesNotExist:
+            return Response({"detail": "Application not found"}, status=404)
+
+        application.status = new_status
+        application.save()
+
+        return Response(
+            {"detail": "Status updated"},
+            status=status.HTTP_200_OK
+        )
+
 
 class SignupView(generics.CreateAPIView):
     serializer_class = UserSignupSerializer
