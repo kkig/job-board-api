@@ -10,6 +10,8 @@ from rest_framework.decorators import action, api_view, permission_classes
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from django.shortcuts import get_object_or_404
+
 from .models import Job, Application
 
 from .serializers import JobSerializer
@@ -18,6 +20,8 @@ from .serializers_application import ApplicationSerializer
 from .serializers_profile import ProfileSerializer
 
 from .permissions import IsEmployer, IsApplicant
+
+from .tasks import send_application_notification
 
 
 # Create your views here.
@@ -154,3 +158,39 @@ def my_profile(request):
     profile = request.user.profile
     serializer = ProfileSerializer(profile)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes
+def apply_to_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+
+    # Check if the user has already applied
+    if Application.objects.filter(user=request.user, job=job).exists():
+        return Response(
+            {"detail": "You have already applied to this job."},
+            status=400
+            )
+
+    # Create the application
+    application = Application.objects.create(
+        user=request.user,
+        job=job,
+        status='Applied'
+    )
+
+    print("Triggering application notification")
+    
+    # Trigger the email notification asynchronously via Celery
+    send_application_notification.delay(
+        to_email=job.created_by.email,
+        job_title=job.title,
+        applicant_name=request.user.username
+    )
+
+    serializer = ApplicationSerializer(application)
+
+    return Response(
+        serializer.data,
+        status=201,
+        )

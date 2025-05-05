@@ -11,8 +11,7 @@ djangorestframework==3.16.0
 djangorestframework_simplejwt==5.5.0
 kombu==5.5.3
 prompt_toolkit==3.0.51
-psycopg==3.2.7
-psycopg-binary==3.2.7
+psycopg2-binary==2.9.10
 PyJWT==2.9.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
