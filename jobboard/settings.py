@@ -49,6 +49,9 @@ INSTALLED_APPS = [
 
     # My apps
     'jobs',
+
+    # Celery Beat
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [

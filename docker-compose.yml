@@ -40,11 +40,12 @@ services:
 
   celery-beat:
     build: .
-    command: celery -A jobboard beat --loglevel=info
+    command: >
+      sh -c "celery -A jobboard beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     volumes:
       - .:/code
     env_file:
       - .env
     depends_on:
+      - web
       - redis
-      - db
