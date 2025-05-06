@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Job
+from jobs.models import Job
 
 
 # Convert model instances to JSON format

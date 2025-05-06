@@ -15,9 +15,9 @@ from django.shortcuts import get_object_or_404
 from .models import Job, Application
 
 from .serializers import JobSerializer
-from .serializers_user import UserSignupSerializer
-from .serializers_application import ApplicationSerializer
-from .serializers_profile import ProfileSerializer
+from .serializers import UserSignupSerializer
+from .serializers import ApplicationSerializer
+from .serializers import ProfileSerializer
 
 from .permissions import IsEmployer, IsApplicant
 
